@@ -28,6 +28,10 @@ RSpec.describe NotificationsController, type: :controller do
   # This should return the minimal set of attributes required to create a valid
   # Notification. As you add validations to Notification, be sure to
   # adjust the attributes here as well.
+  let(:raw_params) {
+    JSON.parse '{"UnsubscribeURL":"https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:917568727384:config-topic-us-west-2:248de42d-a6c9-4a47-aaa0-b6680283416c","Type":"Notification","TopicArn":"arn:aws:sns:us-west-2:917568727384:config-topic-us-west-2","Timestamp":"2017-10-12T21:15:03.830Z","Subject":"[AWS Config:us-west-2] Configuration Snapshot Delivery Started for Account 917568727384","SigningCertURL":"https://sns.us-west-2.amazonaws.com/SimpleNotificationService-433026a4050d206028891664da859041.pem","SignatureVersion":"1","Signature":"G6I+gMVv4tM4yD0K7c81WPMENeZfMC86/hDgHkO10KKw1L86llMwiTXrgnwZO3P/CVUG2dfOf62/2TPR1WyM0UoG0o2WLCglZJcoubXLGgSp2+AsqiJka+PP+LElsvu65RG02kI1rb4R3QGf8TY2V9p0DwkpDmGMK6tbeIABzuxO19CxbFzX2VoHZKB/zbnUaapsh5RgLKWmEJUYF87bLIUetfn0OnXuCdXrLuPF/jg4iVvhq/wBMgPcNlIgCCzyIE/KSt61W7dDlENcRf+TtHDgnDwGSgdpIQCc/5yDKissPuoCCA1Mt16IidqICJr9dqibwjAhI2oY0LtfNu8sdg==","MessageId":"24d34071-463d-51ac-9a22-12289baaa063","Message":"{\"configSnapshotId\":\"de4b0642-2923-43fb-8a3b-5dd71fa1cfe1\",\"notificationCreationTime\":\"2017-10-12T21:15:03.556Z\",\"messageType\":\"ConfigurationSnapshotDeliveryStarted\",\"recordVersion\":\"1.1\"}"}'
+  }
+
   let(:valid_attributes) {
     skip("Add a hash of attributes valid for your model")
   }
@@ -41,30 +45,15 @@ RSpec.describe NotificationsController, type: :controller do
   # NotificationsController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
-  describe "GET #index" do
-    it "returns a success response" do
-      notification = Notification.create! valid_attributes
-      get :index, params: {}, session: valid_session
-      expect(response).to be_success
-    end
-  end
-
-  describe "GET #show" do
-    it "returns a success response" do
-      notification = Notification.create! valid_attributes
-      get :show, params: {id: notification.to_param}, session: valid_session
-      expect(response).to be_success
-    end
-  end
-
   describe "POST #create" do
     context "with valid params" do
       it "creates a new Notification" do
         expect {
-          post :create, params: {notification: valid_attributes}, session: valid_session
+          post :create, params: raw_params, session: valid_session
         }.to change(Notification, :count).by(1)
       end
 
+=begin
       it "renders a JSON response with the new notification" do
 
         post :create, params: {notification: valid_attributes}, session: valid_session
@@ -72,8 +61,9 @@ RSpec.describe NotificationsController, type: :controller do
         expect(response.content_type).to eq('application/json')
         expect(response.location).to eq(notification_url(Notification.last))
       end
+=end
     end
-
+=begin
     context "with invalid params" do
       it "renders a JSON response with errors for the new notification" do
 
@@ -82,48 +72,6 @@ RSpec.describe NotificationsController, type: :controller do
         expect(response.content_type).to eq('application/json')
       end
     end
+=end
   end
-
-  describe "PUT #update" do
-    context "with valid params" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
-
-      it "updates the requested notification" do
-        notification = Notification.create! valid_attributes
-        put :update, params: {id: notification.to_param, notification: new_attributes}, session: valid_session
-        notification.reload
-        skip("Add assertions for updated state")
-      end
-
-      it "renders a JSON response with the notification" do
-        notification = Notification.create! valid_attributes
-
-        put :update, params: {id: notification.to_param, notification: valid_attributes}, session: valid_session
-        expect(response).to have_http_status(:ok)
-        expect(response.content_type).to eq('application/json')
-      end
-    end
-
-    context "with invalid params" do
-      it "renders a JSON response with errors for the notification" do
-        notification = Notification.create! valid_attributes
-
-        put :update, params: {id: notification.to_param, notification: invalid_attributes}, session: valid_session
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to eq('application/json')
-      end
-    end
-  end
-
-  describe "DELETE #destroy" do
-    it "destroys the requested notification" do
-      notification = Notification.create! valid_attributes
-      expect {
-        delete :destroy, params: {id: notification.to_param}, session: valid_session
-      }.to change(Notification, :count).by(-1)
-    end
-  end
-
 end
